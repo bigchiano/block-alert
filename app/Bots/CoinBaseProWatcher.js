@@ -1,6 +1,8 @@
 const WebSocket = require('ws')
 const config = require('../../config/config')
 
+let forks = 0
+
 module.exports = async () => {
     const { webSocketUrl, productIds } = config.coinBasePro
     const ws = new WebSocket(webSocketUrl)
@@ -36,14 +38,17 @@ module.exports = async () => {
         (async () => {
             // get all notifications from db
 
+            if (forks >= 5) return
+            forks++
             /**  
              * loop though notifications
              *  if (check price type == below and the notification.price > ticker.price) send notification
              * 
              *  if (check price type == above and the notification.price < ticker.price) send notification
              *  
-             *  
+             *  once done
             */
+           forks--
         })()
     }
 

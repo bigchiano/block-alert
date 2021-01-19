@@ -2,10 +2,9 @@
 const { Model } = require('sequelize')
 
 const { v4: uuidv4 } = require('uuid')
-const bcrypt = require('bcryptjs')
 
 module.exports = (sequelize, DataTypes) => {
-  class user extends Model {
+  class notification extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,52 +12,46 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      user.hasMany(models.notification, { foreignKey: 'id', as: 'notification' })
     }
   }
-
-  user.init(
+  notification.init(
     {
       id: {
         primaryKey: true,
+        type: DataTypes.STRING,
+      },
+      type: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      targetPrice: {
+        type: DataTypes.DOUBLE,
+        allowNull: false
+      },
+      notificationChannelId: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      coinId: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      restTime: {
+        type: DataTypes.DOUBLE
+      },
+      note: {
         type: DataTypes.STRING
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      firstName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      lastName: {
-        type: DataTypes.STRING,
-        // allowNull defaults to true
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      tokens: {
-        type: DataTypes.JSON,
       },
     },
     {
       hooks: {
         beforeCreate: (user, options) => {
           user.id = uuidv4()
-        },
-        beforeSave: async (user, options) => {
-          if (user.changed('password')) {
-            const passwordHash = await bcrypt.hash(user.password, 10)
-            user.password = passwordHash
-          }
         }
       },
       sequelize,
-      modelName: 'user',
+      modelName: 'notification',
     }
   )
-
-  return user
+  return notification
 }
