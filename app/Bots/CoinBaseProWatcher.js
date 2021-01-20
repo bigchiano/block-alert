@@ -2,8 +2,7 @@ const WebSocket = require('ws')
 const config = require('../../config/config')
 
 let forks = 0
-
-module.exports = async () => {
+const openChannel = async () => {
     const { webSocketUrl, productIds } = config.coinBasePro
     const ws = new WebSocket(webSocketUrl)
 
@@ -35,24 +34,28 @@ module.exports = async () => {
         const ticker = data.type == 'ticker' ? data : {}
         console.log(ticker)
 
-        (async () => {
-            // get all notifications from db
-
-            if (forks >= 5) return
-            forks++
-            /**  
-             * loop though notifications
-             *  if (check price type == below and the notification.price > ticker.price) send notification
-             * 
-             *  if (check price type == above and the notification.price < ticker.price) send notification
-             *  
-             *  once done
-            */
-           forks--
-        })()
+        // get all notifications from db
+        if (forks >= 5) return
+        forks++
+        /**  
+         * loop though notifications
+         *  if (check price type == below and the notification.price > ticker.price) send notification
+         * 
+         *  if (check price type == above and the notification.price < ticker.price) send notification
+         *  
+         *  once done
+        */
+        // forks--
     }
+
+    ws.on('error', (e) => {
+        console.log('error occured', e.message)
+    })
 
     ws.on('close', () => {
         console.log('channel clossed')
     })
 }
+
+module.exports = openChannel
+

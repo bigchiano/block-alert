@@ -29,11 +29,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      productId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       hooks: {
-        beforeCreate: (user, options) => {
-          user.id = uuidv4()
+        beforeCreate: (coin, options) => {
+          coin.id = uuidv4()
+          console.log('coin.id', coin.id);
         }
       },
       sequelize,

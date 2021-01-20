@@ -45,8 +45,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       hooks: {
-        beforeCreate: (user, options) => {
-          user.id = uuidv4()
+        beforeCreate: (notification, options) => {
+          notification.id = uuidv4()
         }
       },
       sequelize,

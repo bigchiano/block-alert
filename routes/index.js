@@ -3,6 +3,7 @@ const router = express.Router()
 
 // Handlers
 const usersRouter = require('./users')
+const coinsRouter = require('./coins')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -21,6 +22,10 @@ const routers = [
   {
     path: '/users',
     handler: usersRouter,
+  },
+  {
+    path: '/coins',
+    handler: coinsRouter,
   },
 ]
 
