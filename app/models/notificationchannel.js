@@ -24,11 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      channelId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      }
     },
     {
       hooks: {

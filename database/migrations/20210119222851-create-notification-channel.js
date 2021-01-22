@@ -9,9 +9,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      channelId: {
-        type: Sequelize.STRING
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

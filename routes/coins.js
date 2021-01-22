@@ -3,7 +3,7 @@ const router = express.Router()
 const { add, findAll, findOne } = require('../app/controllers/CoinController')
 
 /**
- *  Main routes 
+ *  Coin routes 
  * **/
 
 /* ADD a coin to our system. */

@@ -6,7 +6,7 @@ const { create, login, findAll, findOne } = require('../app/controllers/UserCont
 const validateUser = require('../app/middlewares/validators/user/validateUser')
 
 /**
- *  Main routes 
+ *  User routes 
  * **/
 
 /* CREATE user. */
