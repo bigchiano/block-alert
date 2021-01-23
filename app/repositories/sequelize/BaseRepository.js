@@ -11,12 +11,12 @@ class BaseRepository {
     return await this.Model.update(data, { where: query })
   }
 
-  async find(query, populate = [], attributes) {
-    return await this.Model.findOne({ where: query, attributes })
+  async find(query, include = [], attributes) {
+    return await this.Model.findOne({ where: query, include, attributes })
   }
 
-  async findAll(query, populate = [], attributes) {
-    return await this.Model.findAll({ where: query, attributes })
+  async findAll(query, include = [], attributes) {
+    return await this.Model.findAll({ where: query, include, attributes })
   }
 
   async delete(query) {

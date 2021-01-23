@@ -21,7 +21,7 @@ class NotificationContoller {
   static async findAll(req, res) {
     try {
       const notificationModel = new BaseRepository(Notification)
-      const result = await notificationModel.findAll(req.query)
+      const result = await notificationModel.findAll(req.query, ['coin'])
       return res.status(200).send(response('Fechted notification successfully', result))
     } catch (error) {
       return console.log(error.message);

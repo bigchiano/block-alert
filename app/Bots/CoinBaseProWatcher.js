@@ -34,7 +34,6 @@ const openChannel = async () => {
 
     ws.onmessage = async (msg) => {
         const data = JSON.parse(msg.data)
-        console.log(data);
         if (data.type !== 'ticker') return
 
         const ticker = data
@@ -46,7 +45,7 @@ const openChannel = async () => {
 
        try {
            const notificationModel = new BaseRepository(Notification)
-           const notifications = await notificationModel.findAll()
+           const notifications = await notificationModel.findAll({}, ['coin'])
             
            notifications.forEach(notf => {
                const { id, coinId, type, targetPrice, seenTarget, coin } = notf
@@ -54,11 +53,11 @@ const openChannel = async () => {
 
                 const alertMsg = `Alert:: ${coinId} went ${type} ${targetPrice}`
                 //   for debuging, remove soon
-                //   console.log(chalk.blue('Incoming message .......'));
-                //   console.log(chalk.bgBlue('check price', targetPrice));
-                //   console.log(chalk.bgBlue('current price', tickerPrice));
-                //   console.log(chalk.bgBlue('notified', seenTarget));
-                //   console.log(chalk.bgBlue('check for', type));
+                  console.log(chalk.blue('Incoming message .......'));
+                  console.log(chalk.bgBlue('check price', targetPrice));
+                  console.log(chalk.bgBlue('current price', tickerPrice));
+                  console.log(chalk.bgBlue('notified', seenTarget));
+                  console.log(chalk.bgBlue('check for', type));
 
                 if (targetPrice < tickerPrice && !seenTarget && type === 'below') {
                     console.log(chalk.green(alertMsg))

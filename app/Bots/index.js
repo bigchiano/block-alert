@@ -1,1 +1,1 @@
-// require('./CoinBaseProWatcher')()
+require('./CoinBaseProWatcher')()

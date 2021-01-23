@@ -12,9 +12,8 @@ module.exports = {
     "coinBasePro": {
         "webSocketUrl": process.env.COINBASE_WEB_SOCKET_URL,
         "productIds": [
-            // "BTC-USD",
-            "ETH-USD",
-            "ETH-EUR",
+            "BTC-USD",
+            "ETH-USD"
         ],
     }
 }
