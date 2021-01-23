@@ -16,6 +16,9 @@ module.exports = {
       targetPrice: {
         type: Sequelize.DOUBLE
       },
+      seenTarget: {
+        type: Sequelize.BOOLEAN
+      },
       notificationChannelId: {
         type: Sequelize.STRING
       },

@@ -28,6 +28,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DOUBLE,
         allowNull: false
       },
+      seenTarget: {
+        type: DataTypes.BOOLEAN
+      },
       notificationChannelId: {
         type: DataTypes.STRING,
         allowNull: false

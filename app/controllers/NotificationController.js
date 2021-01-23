@@ -7,6 +7,7 @@ class NotificationContoller {
   static async create(req, res) {
     try {
       req.query.userId = "83947a78-a372-4e8c-8b1f-4f34719ae3bb"
+      req.query.seenTarget = false
 
       const notificationModel = new BaseRepository(Notification)
       const result = await notificationModel.save(req.query)
@@ -21,8 +22,9 @@ class NotificationContoller {
     try {
       const notificationModel = new BaseRepository(Notification)
       const result = await notificationModel.findAll(req.query)
-      res.status(200).send(response('Fechted notification successfully', result))
+      return res.status(200).send(response('Fechted notification successfully', result))
     } catch (error) {
+      return console.log(error.message);
       return res.status(400).send(response(error.message, {}, false))
     }
   }
