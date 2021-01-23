@@ -4,6 +4,7 @@ const router = express.Router()
 // Handlers
 const usersRouter = require('./users')
 const coinsRouter = require('./coins')
+const notificationsRouter = require('./notifications')
 const notificationChannelsRouter = require('./notificationChannels')
 
 /* GET home page. */
@@ -27,6 +28,10 @@ const routers = [
   {
     path: '/coins',
     handler: coinsRouter,
+  },
+  {
+    path: '/notifications',
+    handler: notificationsRouter,
   },
   {
     path: '/notification-channels',

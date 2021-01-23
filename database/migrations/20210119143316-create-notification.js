@@ -9,6 +9,10 @@ module.exports = {
       type: {
         type: Sequelize.STRING
       },
+      coinId: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       targetPrice: {
         type: Sequelize.DOUBLE
       },
