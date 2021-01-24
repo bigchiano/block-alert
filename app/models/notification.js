@@ -13,14 +13,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       notification.belongsTo(models.coin, { foreignKey: 'coinId', as: 'coin' })
+      notification.belongsTo(models.user, { foreignKey: 'userId', as: 'user' })
+      notification.belongsTo(models.notificationChannel, { foreignKey: 'notificationChannelId', as: 'notificationChannel' })
     }
   }
-  
+
   notification.init(
     {
       id: {
         primaryKey: true,
         type: DataTypes.STRING,
+      },
+      userId: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       type: {
         type: DataTypes.STRING,

@@ -3,7 +3,10 @@ const config = require('../../config/config')
 const chalk = require('chalk')
 
 const Notification = require('../models').notification
+const UserNotificationChannel = require('../models').userNotificationChannel
 const BaseRepository = require('../repositories/sequelize/BaseRepository')
+const { sendWhatsappMessage } = require('../utils/twilio')
+const { sendTelegramMessage } = require('../utils/telegram')
 
 let forks = 0
 const openChannel = async () => {
@@ -45,24 +48,32 @@ const openChannel = async () => {
 
        try {
            const notificationModel = new BaseRepository(Notification)
-           const notifications = await notificationModel.findAll({}, ['coin'])
+           const notifications = await notificationModel.findAll({}, ['coin', 'notificationChannel'])
             
-           notifications.forEach(notf => {
-               const { id, coinId, type, targetPrice, seenTarget, coin } = notf
+           notifications.forEach(async notf => {
+               const { id, type, targetPrice, seenTarget, coin, notificationChannel, notificationChannelId, userId } = notf
                if (coin.productId !== ticker.product_id) return
+                
+                const alertMsg = `${coin.name} went ${type} ${targetPrice}`
 
-                const alertMsg = `Alert:: ${coinId} went ${type} ${targetPrice}`
                 //   for debuging, remove soon
-                  console.log(chalk.blue('Incoming message .......'));
-                  console.log(chalk.bgBlue('check price', targetPrice));
-                  console.log(chalk.bgBlue('current price', tickerPrice));
-                  console.log(chalk.bgBlue('notified', seenTarget));
-                  console.log(chalk.bgBlue('check for', type));
+                // console.log(chalk.blue('Incoming message .......'));
+                // console.log(chalk.bgBlue('check price', targetPrice));
+                // console.log(chalk.bgBlue('current price', tickerPrice));
+                // console.log(chalk.bgBlue('notified', seenTarget));
+                // console.log(chalk.bgBlue('check for', type));
 
                 if (targetPrice < tickerPrice && !seenTarget && type === 'below') {
                     console.log(chalk.green(alertMsg))
                     // set to seenTarget
-                    notificationModel.update({ id }, { seenTarget: true })
+                    await notificationModel.update({ id }, { seenTarget: true })
+
+                    if (notificationChannel.name == 'telegram') {
+                        const userNotificationChannelModel = new BaseRepository(UserNotificationChannel)
+                        const userNotiChan = await userNotificationChannelModel.find({userId, notificationChannelId})
+                        if(!userNotiChan || !userNotiChan.channelId) return
+                        sendTelegramMessage(userNotiChan.channelId, alertMsg)
+                    }
                     return
                 }
 
@@ -70,7 +81,14 @@ const openChannel = async () => {
                 if (targetPrice > tickerPrice && !seenTarget && type === 'above') {
                     console.log(chalk.green(alertMsg))
                     // set to seenTarget
-                    notificationModel.update({ id }, { seenTarget: true })
+                    await notificationModel.update({ id }, { seenTarget: true })
+
+                    if (notificationChannel.name == 'telegram') {
+                        const userNotificationChannelModel = new BaseRepository(UserNotificationChannel)
+                        const userNotiChan = await userNotificationChannelModel.find({userId, notificationChannelId})
+                        if(!userNotiChan || !userNotiChan.channelId) return
+                        sendTelegramMessage(userNotiChan.channelId, alertMsg)
+                    }
                     return
                 }
 

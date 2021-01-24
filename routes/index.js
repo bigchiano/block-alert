@@ -6,6 +6,7 @@ const usersRouter = require('./users')
 const coinsRouter = require('./coins')
 const notificationsRouter = require('./notifications')
 const notificationChannelsRouter = require('./notificationChannels')
+const userNotificationChannelsRouter = require('./userNotificationChannels')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -36,6 +37,10 @@ const routers = [
   {
     path: '/notification-channels',
     handler: notificationChannelsRouter,
+  },
+  {
+    path: '/user-notification-channels',
+    handler: userNotificationChannelsRouter,
   },
 ]
 

@@ -4,13 +4,14 @@ const { create, update, findAll, findOne } = require('../app/controllers/Notific
 
 // middlewares
 // const validateUser = require('../app/middlewares/validators/user/validateUser')
+const auth = require('../app/middlewares/auth')
 
 /**
  *  User routes 
  * **/
 
 /* CREATE notification. */
-router.post('/create', create)
+router.post('/create', auth, create)
 /* UPDATE notification. */
 router.post('/update', update)
 /* GET notifications listing. */

@@ -2,10 +2,9 @@
 const { Model } = require('sequelize')
 
 const { v4: uuidv4 } = require('uuid')
-const bcrypt = require('bcryptjs')
 
 module.exports = (sequelize, DataTypes) => {
-  class user extends Model {
+  class userNotificationChannel extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,50 +12,42 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      user.hasMany(models.notification, { foreignKey: 'id', as: 'notification' })
+      userNotificationChannel.belongsTo(models.user, { foreignKey: 'userId', as: 'user' })
+      userNotificationChannel.belongsTo(models.notification, { foreignKey: 'notificationChannelId', as: 'notificationChannel' })
     }
   }
 
-  user.init(
+  userNotificationChannel.init(
     {
       id: {
         primaryKey: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
-      email: {
+      userId: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      firstName: {
-        type: DataTypes.STRING,
-      },
-      lastName: {
-        type: DataTypes.STRING,
-      },
-      password: {
+      notificationChannelId: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      tokens: {
-        type: DataTypes.JSON,
+      channelId: {
+        type: DataTypes.STRING,
+      },
+      setupId: {
+        type: DataTypes.STRING,
       },
     },
     {
       hooks: {
-        beforeCreate: (user, options) => {
-          user.id = uuidv4()
+        beforeCreate: (userNotificationChannel, options) => {
+          userNotificationChannel.id = uuidv4()
         },
-        beforeSave: async (user, options) => {
-          if (user.changed('password')) {
-            const passwordHash = await bcrypt.hash(user.password, 10)
-            user.password = passwordHash
-          }
-        }
       },
       sequelize,
-      modelName: 'user',
+      modelName: 'userNotificationChannel',
     }
   )
 
-  return user
+  return userNotificationChannel
 }

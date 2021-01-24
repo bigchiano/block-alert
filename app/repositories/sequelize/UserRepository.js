@@ -24,9 +24,6 @@ class UserRepository {
       throw new Error('User with email already exits!!')
     }
 
-    const passwordHash = await bcrypt.hash(data.password, 10);
-    data.password = passwordHash
-
     data.id = uuidv4()
     data.tokens = JSON.stringify({})
     const user = await userModel.save(data)
