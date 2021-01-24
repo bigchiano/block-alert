@@ -8,7 +8,7 @@ const BaseRepository = require('../repositories/sequelize/BaseRepository')
 const { sendWhatsappMessage } = require('../utils/twilio')
 const { sendTelegramMessage } = require('../utils/telegram')
 
-let forks = 0
+let working = false
 const openChannel = async () => {
     const { webSocketUrl, productIds } = config.coinBasePro
     const ws = new WebSocket(webSocketUrl)
@@ -36,15 +36,14 @@ const openChannel = async () => {
     })
 
     ws.onmessage = async (msg) => {
-        const data = JSON.parse(msg.data)
-        if (data.type !== 'ticker') return
-
-        const ticker = data
+        if (working) return
+        working = true
+        
+        const ticker = JSON.parse(msg.data)
+        if (ticker.type !== 'ticker') return
         const tickerPrice = parseFloat(ticker.price)
 
         // get all notifications from db
-        if (forks >= 5) return
-        forks++
 
        try {
            const notificationModel = new BaseRepository(Notification)
@@ -66,7 +65,7 @@ const openChannel = async () => {
                 if (targetPrice < tickerPrice && !seenTarget && type === 'below') {
                     console.log(chalk.green(alertMsg))
                     // set to seenTarget
-                    await notificationModel.update({ id }, { seenTarget: true })
+                    notificationModel.update({ id }, { seenTarget: true })
 
                     if (notificationChannel.name == 'telegram') {
                         const userNotificationChannelModel = new BaseRepository(UserNotificationChannel)
@@ -81,8 +80,8 @@ const openChannel = async () => {
                 if (targetPrice > tickerPrice && !seenTarget && type === 'above') {
                     console.log(chalk.green(alertMsg))
                     // set to seenTarget
-                    await notificationModel.update({ id }, { seenTarget: true })
-
+                    notificationModel.update({ id }, { seenTarget: true })
+                    
                     if (notificationChannel.name == 'telegram') {
                         const userNotificationChannelModel = new BaseRepository(UserNotificationChannel)
                         const userNotiChan = await userNotificationChannelModel.find({userId, notificationChannelId})
@@ -108,10 +107,11 @@ const openChannel = async () => {
 
            })
 
-           forks--
-       } catch (error) {
-           console.log(error.message);
-       }
+           working = false
+        } catch (error) {
+            working = false
+            console.log(error.message);
+        }
     }
 
     ws.on('error', (e) => {
