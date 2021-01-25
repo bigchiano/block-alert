@@ -10,12 +10,17 @@ module.exports = {
     "logging": false,
 
     // Other configs
+    "usedChannel": {
+        "websocket": process.env.USE_WEBSOCKET,
+        "restapi": process.env.USE_RESTAPI
+    },
     "app": {
         "frontendBaseUrl": process.env.FRONTEND_BASE_URL,
         "name": process.env.APP_NAME
     },
     "coinBasePro": {
         "webSocketUrl": process.env.COINBASE_WEB_SOCKET_URL,
+        "restApiUrl": process.env.COINBASE_REST_API_URL,
         "productIds": [
             "BTC-USD",
             "ETH-USD"
