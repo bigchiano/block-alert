@@ -1,3 +1,8 @@
+// initialize streams on models
+const SequelizeStream = require('node-sequelize-stream')
+const sequelize = require('../../models').sequelize
+SequelizeStream(sequelize)
+
 class BaseRepository {
   constructor(model) {
     this.Model = model
@@ -21,6 +26,15 @@ class BaseRepository {
 
   async delete(query) {
     return await this.Model.destroy({ where: query })
+  }
+
+  findAllWithStream(query, include = [], attributes) {
+    return this.Model.findAllWithStream({
+      batchSize: 100,
+      where: query,
+      include,
+      attributes,
+    })
   }
 }
 
