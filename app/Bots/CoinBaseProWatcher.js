@@ -59,6 +59,7 @@ const useRestApi = async () => {
       if (done) {
         setTimeout(() => {
           executingRequest = false
+          useRestApi()
         }, requestWaitTime) 
       }
     } catch (error) {

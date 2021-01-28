@@ -103,31 +103,44 @@ const typeAboveNotification = async ({
   }
 }
 
-executeNotifications = async ({ tickerPrice, tickerProductId, callBack }) => {
+executeNotifications = async ({ tickerPrice, tickerProductId }) => {
   try {
     const notificationModel = new BaseRepository(Notification)
-    const notifications = await notificationModel.findAll({}, [
+    const stream = await notificationModel.findAllWithStream({}, [
       'coin',
       'notificationChannel',
     ])
 
-    notifications.forEach(async (notification) => {
+    stream.on('data', (chunk) => {
+      const notificationsChunk = JSON.parse(chunk.toString())
+      if (notificationsChunk.length < 1) return
+
+      notificationsChunk.forEach(async (notification) => {
         const { type, note, targetPrice, coin } = notification
         if (coin.productId !== tickerProductId) return
-        
-        const alertMsg = `${capitalizeFirstLetter(coin.name)} (${coin.symbol.toUpperCase()}) went ${type} ${numToCurrency(targetPrice)} USD
-        ${note ? null && 'Note: ' + note : '' }`
-        
-      if (type === 'below') {
-        typeBelowNotification({ notification, tickerPrice, alertMsg })
-      } else if (type === 'above') {
-        typeAboveNotification({ notification, tickerPrice, alertMsg })
-      }
+
+        const alertMsg = `${capitalizeFirstLetter(
+          coin.name
+        )} (${coin.symbol.toUpperCase()}) went ${type} ${numToCurrency(
+          targetPrice
+        )} USD
+      ${note ? null && 'Note: ' + note : ''}`
+
+        if (type === 'below') {
+          typeBelowNotification({ notification, tickerPrice, alertMsg })
+        } else if (type === 'above') {
+          typeAboveNotification({ notification, tickerPrice, alertMsg })
+        }
+      })
     })
 
-    if (usedChannel.restapi && callBack) {
-      callBack()
-    }
+    stream.on('end', function () {
+      console.log('end of notifications stream')
+    })
+
+    stream.on('error', function (err) {
+      console.log(err.stack)
+    })
   } catch (error) {
     console.log(chalk.yellow(error.message))
   }
