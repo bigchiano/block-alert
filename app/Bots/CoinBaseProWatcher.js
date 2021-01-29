@@ -2,8 +2,8 @@ const config = require('../../config/config')
 const axios = require('axios')
 const { restApiUrl, productIds } = config.coinBasePro
 const { usedChannel } = require('../../config/config')
-const { executeNotifications } = require('../Libs/exeNotifications')
-const { subscribe } = require('../Libs/webSocket')
+const { executeNotifications } = require('../libs/exeNotifications')
+const { subscribe } = require('../libs/webSocket')
 
 const requestWaitTime = 2000
 let executingRequest = false

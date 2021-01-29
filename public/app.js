@@ -10,7 +10,7 @@ const routers = require('../routes/index')
 const app = express()
 
 // Require Bots
-require('../app/Bots')
+require('../app/bots')
 
 // view engine setup
 app.set('views', path.join(__dirname, '../views'))
