@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       setupId: {
         type: DataTypes.STRING,
+        // verification rand string
       },
     },
     {
