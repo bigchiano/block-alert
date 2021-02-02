@@ -6,7 +6,8 @@ const response = require('../utils/response')
 class NotificationContoller {
   static async create(req, res) {
     try {
-      req.query.userId = req.user.id
+  
+      req.query.userId = req.query.userId
       req.query.seenTarget = false
 
       const notificationModel = new BaseRepository(Notification)
@@ -21,7 +22,7 @@ class NotificationContoller {
   static async findAll(req, res) {
     try {
       const notificationModel = new BaseRepository(Notification)
-      const result = await notificationModel.findAll(req.query, ['coin', 'notificationChannel', 'userNotificationChannels'])
+      const result = await notificationModel.findAll(req.query, ['coin', 'userNotificationChannels'])
       return res.status(200).send(response('Fechted notification successfully', result))
     } catch (error) {
       return res.status(400).send(response(error.message, {}, false))

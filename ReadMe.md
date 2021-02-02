@@ -22,3 +22,4 @@ Run migrations, make sure to have set you environment variables from the env.exa
 npx sequelize db:migrate
 ```   
    
+
