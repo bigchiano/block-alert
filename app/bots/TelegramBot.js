@@ -1,7 +1,7 @@
 const UserNotificationChannel = require('../models').userNotificationChannel
 const Notification = require('../models').notification
 const Coin = require('../models').coin
-const { capitalizeFirstLetter } = require('../utils/jsFunctions')
+const { capitalizeFirstLetter, numToCurrency } = require('../utils/jsFunctions')
 
 const User = require('../models').user
 const BaseRepository = require('../repositories/sequelize/BaseRepository')
@@ -53,12 +53,34 @@ bot.onText(/\/start/, async (msg) => {
 
 bot.onText(/\/listAvailableCoins/, async (msg) => {
     const coinModel = new BaseRepository(Coin)
-    const coins = await coinModel.findAll({}, [], { raw: true })
+    const coins = await coinModel.findAll()
 
     let listCoins = ''
 
     coins.forEach((coin) => {
         listCoins += `${capitalizeFirstLetter(coin.name)}: ${coin.symbol}\n`
+    })
+
+    bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
+})
+
+bot.onText(/\/listNotifications/, async (msg) => {
+    const username = msg.from.username
+
+    const UserModel = await new BaseRepository(User)
+
+    // Check if user already exits
+    const user = await UserModel.find({ username })
+
+    const notificationModel = new BaseRepository(Notification)
+    const notifications = await notificationModel.findAll({ userId: user.id }, [
+        'coin'
+    ])
+
+    let listCoins = ''
+
+    notifications.forEach((notification) => {
+        listCoins += `${notification.coin.symbol}-${notification.type}: ${numToCurrency(notification.targetPrice)} USD\n`
     })
 
     bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
