@@ -43,10 +43,12 @@ class UserRepository {
     }
 
     const userModel = new BaseRepository(User)
-    const user = await userModel.find({ email: data.email })
+    let user = await userModel.find({ email: data.email })
 
     if (!user) {
-      throw new Error('Invalid user credentials')
+      user = await userModel.find({ username: data.email })
+      if (!user)
+        throw new Error('Invalid user credentials')
     }
 
     const isMatch = await bcrypt.compare(data.password, user.password)
