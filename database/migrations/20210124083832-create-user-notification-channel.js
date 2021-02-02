@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      notificationChannelId: {
+      notificationChannel: {
         type: Sequelize.STRING,
         allowNull: false,
       },

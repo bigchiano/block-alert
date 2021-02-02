@@ -108,7 +108,6 @@ executeNotifications = async ({ tickerPrice, tickerProductId }) => {
     const notificationModel = new BaseRepository(Notification)
     const stream = await notificationModel.findAllWithStream({}, [
       'coin',
-      'notificationChannel',
     ])
 
     stream.on('data', (chunk) => {

@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       userNotificationChannel.belongsTo(models.user, { foreignKey: 'userId', as: 'user' })
-      userNotificationChannel.belongsTo(models.notification, { foreignKey: 'notificationChannelId', as: 'notificationChannel' })
     }
   }
 
@@ -27,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      notificationChannelId: {
+      notificationChannel: {
         type: DataTypes.STRING,
         allowNull: false,
       },

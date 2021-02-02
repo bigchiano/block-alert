@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       notification.belongsTo(models.coin, { foreignKey: 'coinId', as: 'coin' })
       notification.belongsTo(models.user, { foreignKey: 'userId', as: 'user' })
-      notification.belongsTo(models.notificationChannel, { foreignKey: 'notificationChannelId', as: 'notificationChannel' })
+      
     }
   }
 
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       seenTarget: {
         type: DataTypes.BOOLEAN
       },
-      notificationChannelId: {
+      notificationChannel: {
         type: DataTypes.STRING,
         allowNull: false
       },

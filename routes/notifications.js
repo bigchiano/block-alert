@@ -11,7 +11,7 @@ const auth = require('../app/middlewares/auth')
  * **/
 
 /* CREATE notification. */
-router.post('/create', auth, create)
+router.post('/create', create)
 /* UPDATE notification. */
 router.post('/update', update)
 /* GET notifications listing. */
