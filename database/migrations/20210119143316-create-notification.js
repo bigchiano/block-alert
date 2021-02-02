@@ -23,7 +23,7 @@ module.exports = {
       seenTarget: {
         type: Sequelize.BOOLEAN
       },
-      notificationChannelId: {
+      notificationChannel: {
         type: Sequelize.STRING
       },
       restTime: {
