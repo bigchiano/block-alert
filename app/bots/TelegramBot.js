@@ -5,13 +5,14 @@ const { capitalizeFirstLetter, numToCurrency } = require('../utils/jsFunctions')
 
 const User = require('../models').user
 const BaseRepository = require('../repositories/sequelize/BaseRepository')
-const UserRepositorry = require('../repositories/sequelize/UserRepository')
+const UserRepository = require('../repositories/sequelize/UserRepository')
 
 const { bot } = require('../utils/telegram')
 
 bot.onText(/\/start/, async (msg) => {
     const username = msg.from.username
     const UserModel = await new BaseRepository(User)
+    const newUser = new UserRepository()
 
     // Check if user already exits
     const user = await UserModel.find({ username })
