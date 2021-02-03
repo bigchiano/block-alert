@@ -79,11 +79,19 @@ bot.onText(/\/listNotifications/, async (msg) => {
 
     let listCoins = ''
 
-    notifications.forEach((notification) => {
-        listCoins += `${notification.coin.symbol}-${notification.type}: ${numToCurrency(notification.targetPrice)} USD\n`
-    })
+    if (notifications.length > 0) {
 
-    bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
+        notifications.forEach((notification) => {
+         listCoins += `${notification.coin.symbol}-${notification.type}: ${numToCurrency(notification.targetPrice)} USD\n`
+        })
+
+        bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
+    } else {
+        bot.sendMessage(msg.chat.id, `No notification added yet!`, { parse_mode: 'Markdown' })
+    }
+
+    
+    
 })
 
 
