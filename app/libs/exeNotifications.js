@@ -8,18 +8,17 @@ const { usedChannel } = require('../../config/config')
 const chalk = require('chalk')
 
 const sendNotification = async ({
-  notificationChannelId,
-  notificationChannelName,
+  notificationChannel,
   userId,
   alertMsg,
 }) => {
-  if (notificationChannelName == 'telegram') {
+  if (notificationChannel == 'telegram') {
     const userNotificationChannelModel = new BaseRepository(
       UserNotificationChannel
     )
     const userNotiChan = await userNotificationChannelModel.find({
       userId,
-      notificationChannelId,
+      notificationChannel,
     })
     if (!userNotiChan || !userNotiChan.channelId) return
     sendTelegramMessage(userNotiChan.channelId, alertMsg)
@@ -45,7 +44,6 @@ const typeBelowNotification = async ({
     targetPrice,
     seenTarget,
     notificationChannel,
-    notificationChannelId,
     userId,
   } = notification
 
@@ -54,8 +52,7 @@ const typeBelowNotification = async ({
     await updateNotificationSeenStatus(id, true)
 
     sendNotification({
-      notificationChannelId,
-      notificationChannelName: notificationChannel.name,
+      notificationChannel,
       userId,
       alertMsg,
     })
@@ -79,7 +76,6 @@ const typeAboveNotification = async ({
     targetPrice,
     seenTarget,
     notificationChannel,
-    notificationChannelId,
     userId,
   } = notification
 
@@ -88,8 +84,7 @@ const typeAboveNotification = async ({
     await updateNotificationSeenStatus(id, true)
 
     sendNotification({
-      notificationChannelId,
-      notificationChannelName: notificationChannel.name,
+      notificationChannel,
       userId,
       alertMsg,
     })
