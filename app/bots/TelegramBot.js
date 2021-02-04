@@ -57,11 +57,17 @@ bot.onText(/\/listAvailableCoins/, async (msg) => {
 
     let listCoins = ''
 
-    coins.forEach((coin) => {
-        listCoins += `${capitalizeFirstLetter(coin.name)}: ${coin.symbol}\n`
-    })
+    if (coins.length > 0) { 
+        coins.forEach((coin) => {
+            listCoins += `${capitalizeFirstLetter(coin.name)}: ${coin.symbol}\n`
+        })
 
-    bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
+        bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
+    } else {
+        bot.sendMessage(msg.chat.id, `No available notifications, try again!`, { parse_mode: 'Markdown' })
+    }
+
+    
 })
 
 bot.onText(/\/listNotifications/, async (msg) => {
