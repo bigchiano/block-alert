@@ -15,6 +15,9 @@ TO set notifications first check for available coins and use their key as follow
 // to check when a coin goes above certain amount   
 /{coinKey}-above amount   
 
+// to delete a notification, make sure to have the correct parameters   
+/delete {coinKey}-{above/below} amount   
+
 // Example, let's set a notification for when bitcoin goes below 32,000 usd   
 /btc-below 32000   
 I hope you're good to go ;)   
