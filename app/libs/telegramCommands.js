@@ -112,27 +112,27 @@ const onListNotifications = async (msg) => {
             ['coin']
         )
 
-        let notifications = ''
-
-        if (notifications.length > 0) {
-            notifications.forEach((notification) => {
-                notifications += `${notification.coin.symbol}-${
-                    notification.type
-                }: ${numToCurrency(notification.targetPrice)} USD\n`
-            })
-
-            bot.sendMessage(msg.chat.id, `${notifications}`, {
-                parse_mode: 'Markdown'
-            })
-        } else {
+        if (notifications.length < 1) {
             bot.sendMessage(
                 msg.chat.id,
-                `Hello, you have not set any notifications yet!`,
+                `Hello, you have not set any notifications yet! \n 
+                 For help on how to set notifications please, click /help`,
                 {
                     parse_mode: 'Markdown'
                 }
             )
         }
+
+        let notificationList = ''
+        notifications.forEach((notification) => {
+            notificationList += `${notification.coin.symbol}-${
+                notification.type
+            }: ${numToCurrency(notification.targetPrice)} USD\n`
+        })
+
+        bot.sendMessage(msg.chat.id, `${notificationList}`, {
+            parse_mode: 'Markdown'
+        })
     } catch (error) {
         console.log(error)
         bot.sendMessage(
