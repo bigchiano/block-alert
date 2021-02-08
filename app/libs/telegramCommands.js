@@ -4,142 +4,197 @@ const UserRepository = require('../repositories/sequelize/UserRepository')
 const User = require('../models').user
 const Coin = require('../models').coin
 const Notification = require('../models').notification
+const UserNotificationChannel = require('../models').userNotificationChannel
+
 const { capitalizeFirstLetter, numToCurrency } = require('../utils/jsFunctions')
 const { bot } = require('../utils/telegram')
 
-const onStart = async () => {
+const onStart = async (msg) => {
     const username = msg.from.username
-    const userModel = await new BaseRepository(User)
+
+    const userModel = new BaseRepository(User)
     const newUser = new UserRepository()
-
-    // Check if user already exits
-    const user = await userModel.find({ username })
-
-    if (!user) {
-        const user = await newUser.create({
-            username,
-            firstName: msg.from.first_name,
-            lastName: msg.from.last_name,
-            password: username
-        })
-
-        const userNotificationChanModel = new BaseRepository(
-            UserNotificationChannel
-        )
-
-        await userNotificationChanModel.save({
-            channelId: msg.chat.id,
-            userId: user.user.dataValues.id,
-            notificationChannel: 'telegram'
-        })
-    }
-
-    bot.sendMessage(
-        msg.chat.id,
-        `*Hi ${msg.from.first_name}*, Welcome to BlockAlert Bot! 🤖 \n \n`,
-        { parse_mode: 'Markdown' }
+    const userNotificationChanModel = new BaseRepository(
+        UserNotificationChannel
     )
 
-    setTimeout(() => {
+    try {
+        // Check if user already exits
+        const user = await userModel.find({ username })
+
+        if (!user) {
+            const user = await newUser.create({
+                username,
+                firstName: msg.from.first_name,
+                lastName: msg.from.last_name,
+                password: username
+            })
+
+            await userNotificationChanModel.save({
+                channelId: msg.chat.id,
+                userId: user.user.dataValues.id,
+                notificationChannel: 'telegram'
+            })
+        }
+
         bot.sendMessage(
             msg.chat.id,
-            `What do you wanna do today🤗 ?\n\n_Use the following actions to set and manage notifications._ \n\n/listNotifications 👣 \n/listAvailableCoins 🧐\n/\help (learn to set notifications) ℹ️\n/donate ❤️`,
+            `*Hi ${msg.from.first_name}*, Welcome to BlockAlert Bot! 🤖 \n \n`,
             { parse_mode: 'Markdown' }
         )
-    }, 1000)
+
+        setTimeout(() => {
+            bot.sendMessage(
+                msg.chat.id,
+                `What do you wanna do today🤗 ?\n\n_Use the following actions to set and manage notifications._ \n\n/listNotifications 👣 \n/listAvailableCoins 🧐\n/\help (learn to set notifications) ℹ️\n/donate ❤️`,
+                { parse_mode: 'Markdown' }
+            )
+        }, 1000)
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(
+            msg.chat.id,
+            'Hello, i am corrently having some issue with my server. please try again later!!'
+        )
+    }
 }
 
 const onListCoins = async (msg) => {
     const coinModel = new BaseRepository(Coin)
-    const coins = await coinModel.findAll()
 
-    let listCoins = ''
+    try {
+        const coins = await coinModel.findAll()
 
-    if (coins.length > 0) {
+        if (coins.length < 1) {
+            bot.sendMessage(
+                msg.chat.id,
+                `We currently do not have any coins listed :(, please try again later!`,
+                {
+                    parse_mode: 'Markdown'
+                }
+            )
+        }
+
+        let listCoins = ''
         coins.forEach((coin) => {
             listCoins += `${capitalizeFirstLetter(coin.name)}: ${coin.symbol}\n`
         })
 
-        bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
-    } else {
-        bot.sendMessage(msg.chat.id, `No available notifications, try again!`, {
+        bot.sendMessage(msg.chat.id, `${listCoins}`, {
             parse_mode: 'Markdown'
         })
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(
+            msg.chat.id,
+            'Hello, i am corrently having some issue with my server. please try again later!!'
+        )
     }
 }
 
 const onListNotifications = async (msg) => {
     const username = msg.from.username
 
-    const userModel = await new BaseRepository(User)
-
-    // Check if user already exits
-    const user = await userModel.find({ username })
-
     const notificationModel = new BaseRepository(Notification)
-    const notifications = await notificationModel.findAll({ userId: user.id }, [
-        'coin'
-    ])
+    const userModel = new BaseRepository(User)
 
-    let listCoins = ''
+    try {
+        const user = await userModel.find({ username })
 
-    if (notifications.length > 0) {
-        notifications.forEach((notification) => {
-            listCoins += `${notification.coin.symbol}-${
-                notification.type
-            }: ${numToCurrency(notification.targetPrice)} USD\n`
-        })
+        const notifications = await notificationModel.findAll(
+            { userId: user.id },
+            ['coin']
+        )
 
-        bot.sendMessage(msg.chat.id, `${listCoins}`, { parse_mode: 'Markdown' })
-    } else {
-        bot.sendMessage(msg.chat.id, `No notification added yet!`, {
-            parse_mode: 'Markdown'
-        })
+        let notifications = ''
+
+        if (notifications.length > 0) {
+            notifications.forEach((notification) => {
+                notifications += `${notification.coin.symbol}-${
+                    notification.type
+                }: ${numToCurrency(notification.targetPrice)} USD\n`
+            })
+
+            bot.sendMessage(msg.chat.id, `${notifications}`, {
+                parse_mode: 'Markdown'
+            })
+        } else {
+            bot.sendMessage(
+                msg.chat.id,
+                `Hello, you have not set any notifications yet!`,
+                {
+                    parse_mode: 'Markdown'
+                }
+            )
+        }
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(
+            msg.chat.id,
+            'Hello, i am corrently having some issue with my server. please try again later!!'
+        )
     }
 }
 
 const onNotify = async (msg, match) => {
     const resp = match[1].split(' ')
-    const notificationModel = new BaseRepository(Notification)
-    const userModel = await new BaseRepository(User)
-    const coinModel = new BaseRepository(Coin)
-
     const symbol = resp[0].split('-')
 
-    const coins = await coinModel.find({ symbol: symbol[0] })
-    const user = await userModel.find({ username: msg.from.username })
+    const notificationModel = new BaseRepository(Notification)
+    const coinModel = new BaseRepository(Coin)
 
-    await notificationModel.save({
-        type: symbol[1],
-        targetPrice: resp[1],
-        notificationChannel: 'telegram',
-        coinId: coins.id,
-        userId: user.id
-    })
+    try {
+        const userModel = await new BaseRepository(User)
+        const user = await userModel.find({ username: msg.from.username })
+        const coins = await coinModel.find({ symbol: symbol[0] })
 
-    bot.sendMessage(msg.chat.id, `Notification created successfully`, {
-        parse_mode: 'Markdown'
-    })
+        await notificationModel.save({
+            type: symbol[1],
+            targetPrice: resp[1],
+            notificationChannel: 'telegram',
+            coinId: coins.id,
+            userId: user.id
+        })
+
+        bot.sendMessage(msg.chat.id, `Your notification has been set :)`, {
+            parse_mode: 'Markdown'
+        })
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(
+            msg.chat.id,
+            'Hello, i am corrently having some issue with my server. please try again later!!'
+        )
+    }
 }
 
 const onDelete = async (msg, match) => {
     const resp = match[1].split(' ')
+    const symbol = resp[0].split('-')
+
     const notificationModel = new BaseRepository(Notification)
     const coinModel = new BaseRepository(Coin)
 
-    const symbol = resp[0].split('-')
-    const coins = await coinModel.find({ symbol: symbol[0] })
+    try {
+        const coins = await coinModel.find({ symbol: symbol[0] })
 
-    await notificationModel.delete({
-        type: symbol[1],
-        targetPrice: resp[1],
-        notificationChannel: 'telegram',
-        coinId: coins.id
-    })
+        await notificationModel.delete({
+            type: symbol[1],
+            targetPrice: resp[1],
+            notificationChannel: 'telegram',
+            coinId: coins.id
+        })
 
-    bot.sendMessage(msg.chat.id, `Notification deleted successfully`, {
-        parse_mode: 'Markdown'
-    })
+        bot.sendMessage(msg.chat.id, `Notification deleted successfully`, {
+            parse_mode: 'Markdown'
+        })
+    } catch (error) {
+        console.log(error)
+        bot.sendMessage(
+            msg.chat.id,
+            'Hello, i am corrently having some issue with my server. please try again later!!'
+        )
+    }
 }
 
 const onHelp = async (msg) => {

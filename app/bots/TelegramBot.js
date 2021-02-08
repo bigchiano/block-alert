@@ -7,6 +7,7 @@ const {
     onHelp,
     onDonate
 } = require('../libs/telegramCommands')
+
 const { bot } = require('../utils/telegram')
 
 bot.onText(/\/start/, onStart)
