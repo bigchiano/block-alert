@@ -137,8 +137,10 @@ const onListNotifications = async (msg) => {
 }
 
 const onNotify = async (msg, match) => {
-    const resp = match[1].split(' ')
-    const symbol = resp[0].split('-')
+    const req = match[1].split(' ')
+    const secondParam = req[0].split('-')
+    const coinSymbol = secondParam[0]
+    const notifyType = secondParam[1]
 
     const notificationModel = new BaseRepository(Notification)
     const coinModel = new BaseRepository(Coin)
@@ -146,11 +148,11 @@ const onNotify = async (msg, match) => {
     try {
         const userModel = await new BaseRepository(User)
         const user = await userModel.find({ username: msg.from.username })
-        const coins = await coinModel.find({ symbol: symbol[0] })
+        const coins = await coinModel.find({ symbol: coinSymbol })
 
         await notificationModel.save({
-            type: symbol[1],
-            targetPrice: resp[1],
+            type: notifyType,
+            targetPrice: req[1],
             notificationChannel: 'telegram',
             coinId: coins.id,
             userId: user.id
@@ -169,18 +171,20 @@ const onNotify = async (msg, match) => {
 }
 
 const onDelete = async (msg, match) => {
-    const resp = match[1].split(' ')
-    const symbol = resp[0].split('-')
+    const req = match[1].split(' ')
+    const secondParam = req[0].split('-')
+    const coinSymbol = secondParam[0]
+    const notifyType = secondParam[1]
 
     const notificationModel = new BaseRepository(Notification)
     const coinModel = new BaseRepository(Coin)
 
     try {
-        const coins = await coinModel.find({ symbol: symbol[0] })
+        const coins = await coinModel.find({ symbol: coinSymbol })
 
         await notificationModel.delete({
-            type: symbol[1],
-            targetPrice: resp[1],
+            type: notifyType,
+            targetPrice: req[1],
             notificationChannel: 'telegram',
             coinId: coins.id
         })
