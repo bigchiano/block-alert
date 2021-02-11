@@ -46,12 +46,12 @@ const onStart = async (msg) => {
         setTimeout(() => {
             bot.sendMessage(
                 msg.chat.id,
-                `What do you wanna do today🤗 ?\n\n
-                 Use the following actions to set and manage notifications. \n\n
-                 /listNotifications (to check all notifications you have set) 👣 \n
-                 /listAvailableCoins (to see coins on our list) 🧐\n
-                 /help (learn to set notifications) ℹ️\n
-                 /donate (to donate to the development of this bot) ❤️
+                `What do you wanna do today🤗 ?\n\n \
+                 Use the following actions to set and manage notifications. \n\n \
+                 /listNotifications (to check all notifications you have set) 👣 \n \
+                 /listAvailableCoins (to see coins on our list) 🧐\n \
+                 /help (learn to set notifications) ℹ️\n \
+                 /donate (to donate to the development of this bot) ❤️ \
                  /about (to know more about us)`,
                 { parse_mode: 'Markdown' }
             )
@@ -115,7 +115,7 @@ const onListNotifications = async (msg) => {
         if (notifications.length < 1) {
             bot.sendMessage(
                 msg.chat.id,
-                `Hello, you have not set any notifications yet! \n 
+                `Hello, you have not set any notifications yet! \n \
                  For help on how to set notifications please, click /help`,
                 {
                     parse_mode: 'Markdown'
@@ -210,11 +210,11 @@ const onDelete = async (msg, match) => {
 const onHelp = async (msg) => {
     bot.sendMessage(
         msg.chat.id,
-        `To set notifications first check for available coins and use their key as follows: \n\n 
-         To check when a coin goes below certain amount \n /notify {coinKey}-below amount \n\n 
-         To check when a coin goes above certain amount \n /notify {coinKey}-above amount \n\n
-         Example, let's set a notification for when bitcoin goes below 32,000 USD \n
-         /notify btc-below 32000 \n\n I hope you're good to go ;)`,
+        `To set notifications first check for available coins and use their key as follows: \n\n \
+         To check when a coin goes below certain amount \n /notify {coinKey}-below amount \n\n \
+         To check when a coin goes above certain amount \n /notify {coinKey}-above amount \n\n \
+         Example, let's set a notification for when bitcoin goes below 32,000 USD \n \
+         /notify btc-below 32000 \n\n I hope you're good to go ;)`, 
         { parse_mode: 'Markdown' }
     )
 }
