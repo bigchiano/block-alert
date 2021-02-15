@@ -1,10 +1,8 @@
 const Notification = require('../models').notification
 const UserNotificationChannel = require('../models').userNotificationChannel
 const BaseRepository = require('../repositories/sequelize/BaseRepository')
-const { sendWhatsappMessage } = require('../utils/twilio')
 const { sendTelegramMessage } = require('../utils/telegram')
 const { capitalizeFirstLetter, numToCurrency } = require('../utils/jsFunctions')
-const { usedChannel } = require('../../config/config')
 const chalk = require('chalk')
 
 const sendNotification = async ({
@@ -47,7 +45,7 @@ const typeBelowNotification = async ({
     userId,
   } = notification
 
-  if (targetPrice < tickerPrice && !seenTarget) {
+  if (parseFloat(targetPrice) < parseFloat(tickerPrice) && !seenTarget) {
     // set to seenTarget
     await updateNotificationSeenStatus(id, true)
 
@@ -59,7 +57,7 @@ const typeBelowNotification = async ({
     return
   }
 
-  if (targetPrice >= tickerPrice && seenTarget) {
+  if (parseFloat(targetPrice) >= parseFloat(tickerPrice) && seenTarget) {
     // set to not seenTarget
     await updateNotificationSeenStatus(id, false)
     return
@@ -79,7 +77,7 @@ const typeAboveNotification = async ({
     userId,
   } = notification
 
-  if (targetPrice > tickerPrice && !seenTarget) {
+  if (parseFloat(targetPrice) > parseFloat(tickerPrice) && !seenTarget) {
     // set to seenTarget
     await updateNotificationSeenStatus(id, true)
 
@@ -91,7 +89,7 @@ const typeAboveNotification = async ({
     return
   }
 
-  if (targetPrice <= tickerPrice && seenTarget) {
+  if (parseFloat(targetPrice) <= parseFloat(tickerPrice) && seenTarget) {
     // set to not seenTarget
     await updateNotificationSeenStatus(id, false)
     return

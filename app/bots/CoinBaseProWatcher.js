@@ -24,7 +24,7 @@ const useWebSocket = async () => {
 
     const ticker = JSON.parse(msg.data)
     if (ticker.type !== 'ticker') return
-    const tickerPrice = parseFloat(ticker.price)
+    const tickerPrice = ticker.price
     const tickerProductId = ticker.product_id
 
     const done = await executeNotifications({
@@ -47,7 +47,7 @@ const useRestApi = async () => {
       executingRequest = true
       const res = await axios.get(`${restApiUrl}/products/${productId}/ticker`)
       if (!res) return
-      const tickerPrice = parseFloat(res.data.price)
+      const tickerPrice = res.data.price
       const tickerProductId = productId
 
       const done = await executeNotifications({
