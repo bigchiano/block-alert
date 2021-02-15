@@ -22,10 +22,10 @@ require('./app/bots')
  */
 
 // view engine setup
-app.set('views', path.join(__dirname, '../views'))
+app.set('views', path.join(__dirname, './views'))
 app.set('view engine', 'hbs')
 // setup path for handlebars partials
-const partialsPath = path.join(__dirname, '../views/layouts')
+const partialsPath = path.join(__dirname, './views/layouts')
 hbs.registerPartials(partialsPath)
 
 app.use(logger('dev'))
