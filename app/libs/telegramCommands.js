@@ -165,6 +165,7 @@ const onNotify = async (msg, match) => {
         bot.sendMessage(msg.chat.id, `Your notification has been set :)`, {
             parse_mode: 'Markdown'
         })
+        
         return
     } catch (error) {
         bot.sendMessage(

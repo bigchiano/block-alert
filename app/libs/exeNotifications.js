@@ -54,7 +54,7 @@ const typeBelowNotification = async ({
     userId,
   } = notification
 
-  if (parseFloat(targetPrice) < parseFloat(tickerPrice) && !seenTarget) {
+  if (parseFloat(tickerPrice) < parseFloat(targetPrice) && !seenTarget) {
     // set to seenTarget
     await deleteNotification(id)
 
@@ -66,7 +66,7 @@ const typeBelowNotification = async ({
     return
   }
 
-  if (parseFloat(targetPrice) >= parseFloat(tickerPrice) && seenTarget) {
+  if (parseFloat(tickerPrice) >= parseFloat(targetPrice) && seenTarget) {
     // set to not seenTarget
     await deleteNotification(id)
     return
@@ -86,7 +86,7 @@ const typeAboveNotification = async ({
     userId,
   } = notification
 
-  if (parseFloat(targetPrice) > parseFloat(tickerPrice) && !seenTarget) {
+  if (parseFloat(tickerPrice) > parseFloat(targetPrice) && !seenTarget) {
     // set to seenTarget
     await deleteNotification(id)
 
@@ -98,7 +98,7 @@ const typeAboveNotification = async ({
     return
   }
 
-  if (parseFloat(targetPrice) <= parseFloat(tickerPrice) && seenTarget) {
+  if (parseFloat(tickerPrice) <= parseFloat(targetPrice) && seenTarget) {
     // set to not seenTarget
     await deleteNotification(id)
     return
