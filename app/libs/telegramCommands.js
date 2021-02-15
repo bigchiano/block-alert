@@ -51,11 +51,12 @@ const onStart = async (msg) => {
             )
         }, 1000)
     } catch (error) {
-        console.log(error)
         bot.sendMessage(
             msg.chat.id,
-            'Hello, i am corrently having some issue with my server. please try again later!!'
+            'Hello, i am corrently having some issue with your request. please try again later!!'
         )
+
+        return
     }
 }
 
@@ -73,6 +74,8 @@ const onListCoins = async (msg) => {
                     parse_mode: 'Markdown'
                 }
             )
+
+            return
         }
 
         let listCoins = ''
@@ -84,11 +87,12 @@ const onListCoins = async (msg) => {
             parse_mode: 'Markdown'
         })
     } catch (error) {
-        console.log(error)
         bot.sendMessage(
             msg.chat.id,
-            'Hello, i am corrently having some issue with my server. please try again later!!'
+            'Hello, i am corrently having some issue with your request. please try again later!!'
         )
+
+        return
     }
 }
 
@@ -114,6 +118,7 @@ const onListNotifications = async (msg) => {
                     parse_mode: 'Markdown'
                 }
             )
+            return
         }
 
         let notificationList = ''
@@ -127,11 +132,11 @@ const onListNotifications = async (msg) => {
             parse_mode: 'Markdown'
         })
     } catch (error) {
-        console.log(error)
         bot.sendMessage(
             msg.chat.id,
-            'Hello, i am corrently having some issue with my server. please try again later!!'
+            'Hello, i am corrently having some issue with your request. please try again later!!'
         )
+        return
     }
 }
 
@@ -160,12 +165,14 @@ const onNotify = async (msg, match) => {
         bot.sendMessage(msg.chat.id, `Your notification has been set :)`, {
             parse_mode: 'Markdown'
         })
+        return
     } catch (error) {
-        console.log(error)
         bot.sendMessage(
             msg.chat.id,
-            'Hello, i am corrently having some issue with my server. please try again later!!'
+            'Hello, i am corrently having some issue with your request. please try again later!!'
         )
+
+        return
     }
 }
 
@@ -191,12 +198,13 @@ const onDelete = async (msg, match) => {
         bot.sendMessage(msg.chat.id, `Notification deleted successfully`, {
             parse_mode: 'Markdown'
         })
+        return
     } catch (error) {
-        console.log(error)
         bot.sendMessage(
             msg.chat.id,
-            'Hello, i am corrently having some issue with my server. please try again later!!'
+            'Hello, i am corrently having some issue with your request. please try again later!!'
         )
+        return
     }
 }
 
@@ -206,6 +214,7 @@ const onHelp = async (msg) => {
         `To set notifications first check for available coins and use their key as follows: \n\n To check when a coin goes below certain amount \n /notify {coinKey}-below amount \n\n To check when a coin goes above certain amount \n /notify {coinKey}-above amount \n\n Example, let's set a notification for when bitcoin goes below 32,000 USD \n /notify btc-below 32000 \n\n I hope you're good to go ;)`, 
         { parse_mode: 'Markdown' }
     )
+    return
 }
 
 const onAbout = async (msg) => {
@@ -214,6 +223,7 @@ const onAbout = async (msg) => {
         `Blockylat is a free multi cryptocurrency engine that gives you live updates on cryptocurrencies price on rise or fall events.`,
         { parse_mode: 'Markdown' }
     )
+    return
 }
 
 const onDonate = (msg) => {
@@ -225,6 +235,7 @@ const onDonate = (msg) => {
             parse_mode: 'Markdown'
         }
     )
+    return
 }
 
 module.exports = {
