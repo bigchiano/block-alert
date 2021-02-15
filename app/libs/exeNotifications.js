@@ -32,6 +32,15 @@ const updateNotificationSeenStatus = async (id, seenTarget) => {
   }
 }
 
+const deleteNotification = async (id) => {
+  try {
+    const notificationModel = new BaseRepository(Notification)
+    await notificationModel.delete({ id })
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
 const typeBelowNotification = async ({
   notification,
   tickerPrice,
@@ -47,7 +56,7 @@ const typeBelowNotification = async ({
 
   if (parseFloat(targetPrice) < parseFloat(tickerPrice) && !seenTarget) {
     // set to seenTarget
-    await updateNotificationSeenStatus(id, true)
+    await deleteNotification(id)
 
     sendNotification({
       notificationChannel,
@@ -59,7 +68,7 @@ const typeBelowNotification = async ({
 
   if (parseFloat(targetPrice) >= parseFloat(tickerPrice) && seenTarget) {
     // set to not seenTarget
-    await updateNotificationSeenStatus(id, false)
+    await deleteNotification(id)
     return
   }
 }
@@ -79,7 +88,7 @@ const typeAboveNotification = async ({
 
   if (parseFloat(targetPrice) > parseFloat(tickerPrice) && !seenTarget) {
     // set to seenTarget
-    await updateNotificationSeenStatus(id, true)
+    await deleteNotification(id)
 
     sendNotification({
       notificationChannel,
@@ -91,7 +100,7 @@ const typeAboveNotification = async ({
 
   if (parseFloat(targetPrice) <= parseFloat(tickerPrice) && seenTarget) {
     // set to not seenTarget
-    await updateNotificationSeenStatus(id, false)
+    await deleteNotification(id)
     return
   }
 }
